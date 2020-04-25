@@ -46,12 +46,6 @@ get '/' do
   erb :index, layout: :layout
 end
 
-post '/' do
-  @body = headers[:body]
-
-  erb :posted
-end
-
 get '/new' do
   erb :new
 end
@@ -66,7 +60,7 @@ post '/create' do
     file_path = File.join(data_path, filename)
 
     File.write(file_path, "")
-    sessions[:message] = "#{params[:filename]} has been created."
+    session[:message] = "#{params[:filename]} has been created."
 
     redirect "/"
   end
