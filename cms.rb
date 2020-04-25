@@ -10,6 +10,16 @@ configure do
   set :session_secret, 'super secret'
 end
 
+def data_path
+  # rubocop:disable Style/ExpandPathArguments
+  if ENV['RACK_ENV'] == 'test'
+    File.expand_path('../test/data', __FILE__)
+  else
+    File.expand_path('../data', __FILE__)
+  end
+  # rubocop:enable Style/ExpandPathArguments
+end
+
 def render_markdown(text)
   markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
   markdown.render(text)
@@ -23,18 +33,8 @@ def load_file_content(path)
     headers['Content-Type'] = 'text/plain'
     content
   when '.md'
-    render_markdown(content)
+    erb render_markdown(content)
   end
-end
-
-def data_path
-  # rubocop:disable Style/ExpandPathArguments
-  if ENV['RACK_ENV'] == 'test'
-    File.expand_path('../test/data', __FILE__)
-  else
-    File.expand_path('../data', __FILE__)
-  end
-  # rubocop:enable Style/ExpandPathArguments
 end
 
 get '/' do
@@ -43,7 +43,33 @@ get '/' do
     File.basename(path)
   end
 
-  erb :index
+  erb :index, layout: :layout
+end
+
+post '/' do
+  @body = headers[:body]
+
+  erb :posted
+end
+
+get '/new' do
+  erb :new
+end
+
+post '/create' do
+  filename = params[:filename].to_s
+  if filename.size == 0
+    session[:message] = "A name is required."
+    status 422
+    erb :new
+  else
+    file_path = File.join(data_path, filename)
+
+    File.write(file_path, "")
+    sessions[:message] = "#{params[:filename]} has been created."
+
+    redirect "/"
+  end
 end
 
 get '/:filename' do
@@ -57,17 +83,20 @@ get '/:filename' do
   end
 end
 
+post '/:filename' do
+  file_path = File.join(data_path, params[:filename])
+
+  File.write(file_path, params[:content])
+
+  session[:message] = "#{params[:filename]} has been updated."
+  redirect '/'
+end
+
 get '/:filename/edit' do
   file_path = File.join(data_path, params[:filename])
+
   @filename = params[:filename]
   @content = File.read(file_path)
 
-  erb :edit
-end
-
-post '/:filename' do
-  file_path = File.join(data, params[:filename])
-  File.write(file_path, params[:content])
-  session[:message] = "#{params[:filename]} has been updated."
-  redirect '/'
+  erb :edit, layout: :layout
 end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-
 ENV['RACK_ENV'] = 'test'
 
 require 'fileutils'
+
 require 'minitest/autorun'
 require 'rack/test'
 
@@ -35,7 +35,6 @@ class CMSTest < Minitest::Test
     create_document 'changes.txt'
 
     get '/'
-
     assert_equal 200, last_response.status
     assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
 

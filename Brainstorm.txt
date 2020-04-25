@@ -1,0 +1,10 @@
+Requirements:
+  - Message should be against a yellow background
+  - Disappear when the page is reloaded
+  - Text files should continued to be displayed by the browser
+    as plaintext
+  - The entire site should be displayed in a sans-serif typeface
+
+Implementation: 
+  1. Will need to display the message using a SESSION
+    - session[:error] vs session[:message]?
