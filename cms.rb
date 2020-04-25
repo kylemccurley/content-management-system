@@ -1,9 +1,11 @@
 # cms.rb
+
 require 'redcarpet'
 require "sinatra"
 require "sinatra/reloader"
 require 'tilt/erubis'
 
+# Configure
 enable :sessions
 set :session_secret, 'super secret'
 
@@ -16,12 +18,13 @@ end
 
 def load_file_content(path)
   content = File.read(path)
+  
   case File.extname(path)
   when '.txt'
-  	headers["Content-Type"] = "text/plain"
-  	content
+    headers["Content-Type"] = "text/plain"
+    content
   when '.md'
-  	render_markdown(content)
+    render_markdown(content)
   end
 end
 
@@ -38,27 +41,27 @@ get "/" do
   @files = Dir.glob(pattern).map do |path|
     File.basename(path)
   end
+
   erb :index
 end
 
 get '/:filename' do 
-	file_path = File.join(data_path, params[:filename])
+  file_path = File.join(data_path, params[:filename])
 
   if File.exist?(file_path)
-  	load_file_content(file_path)
+    load_file_content(file_path)
   else
-  	session[:message] = "Sorry. #{params[:filename]} does not exist."
-  	redirect '/'
+    session[:message] = "Sorry. #{params[:filename]} does not exist."
+    redirect '/'
   end
 end
 
 get '/:filename/edit' do
-	file_path = File.join(data_path, params[:filename])
+  file_path = File.join(data_path, params[:filename])
+  @filename = params[:filename]
+  @content = File.read(file_path)
 
-	@filename = params[:filename]
-	@content = File.read(file_path)
-
-	erb :edit
+  erb :edit
 end
 
 post "/:filename" do 
