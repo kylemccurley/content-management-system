@@ -6,8 +6,10 @@ require 'sinatra/reloader'
 require 'tilt/erubis'
 
 # Configure
-enable :sessions
-set :session_secret, 'super secret'
+configure do
+  enable :sessions
+  set :session_secret, 'super secret'
+end
 
 def render_markdown(text)
   markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
