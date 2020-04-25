@@ -94,3 +94,8 @@ get '/:filename/edit' do
 
   erb :edit, layout: :layout
 end
+
+post '/:filename/delete' do
+  filename = params[:filename]
+  
+end

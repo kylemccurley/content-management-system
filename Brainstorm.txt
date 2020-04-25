@@ -1,10 +1,4 @@
 Requirements:
-  - Message should be against a yellow background
-  - Disappear when the page is reloaded
-  - Text files should continued to be displayed by the browser
-    as plaintext
-  - The entire site should be displayed in a sans-serif typeface
+  1. When a user views a page, they should see a 'delete' button next to each document.
+  2. When a user clicks a delete button, the application should delete the appropriate document and display a message: "$FILENAME was deleted".
 
-Implementation: 
-  1. Will need to display the message using a SESSION
-    - session[:error] vs session[:message]?
