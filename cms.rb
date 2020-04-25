@@ -5,7 +5,6 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'tilt/erubis'
 
-# Configure
 configure do
   enable :sessions
   set :session_secret, 'super secret'
