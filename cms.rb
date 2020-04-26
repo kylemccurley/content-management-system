@@ -37,6 +37,10 @@ def load_file_content(path)
   end
 end
 
+def valid_credentials?(username, password)
+  (username == 'admin') && (password == 'secret')
+end
+
 get '/' do
   pattern = File.join(data_path, '*')
   @files = Dir.glob(pattern).map do |path|
@@ -65,6 +69,34 @@ post '/create' do
     redirect "/"
   end
 end
+
+# User Functionality
+
+get '/users/signin' do
+  erb :signin
+end
+
+post '/users/signin' do
+  username = params[:username]
+  password = params[:password]
+
+  if valid_credentials?(username, password)
+    session[:user] = username
+    session[:message] = 'Welcome!'
+    redirect '/'
+  else
+    session[:message] = 'Invalid Credentials'
+    status 422
+    erb :signin
+  end
+end
+
+post '/users/signout' do
+  session.delete(:user)
+  session[:message] = 'You have been signed out.'
+  redirect '/'
+end
+
 
 get '/:filename' do
   file_path = File.join(data_path, params[:filename])
@@ -96,6 +128,10 @@ get '/:filename/edit' do
 end
 
 post '/:filename/delete' do
-  filename = params[:filename]
-  
+  file_path = File.join(data_path, params[:filename])
+
+  File.delete(file_path)
+
+  session[:message] = "#{params[:filename]} has been deleted."
+  redirect '/'
 end

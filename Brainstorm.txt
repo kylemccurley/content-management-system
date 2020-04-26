@@ -1,4 +1,20 @@
 Requirements:
-  1. When a user views a page, they should see a 'delete' button next to each document.
-  2. When a user clicks a delete button, the application should delete the appropriate document and display a message: "$FILENAME was deleted".
+  1. When a signed-out user views the index page of the site, they should see a "Sign In" button.
 
+  2. When a user clicks the "Sign In" button, they should be taken to a new page with a sign in form. The form should contain a text input labeled "Username" and a password input labeled "Password". The form should also contain a submit button labeled "Sign In":
+
+Implicit:
+  - Need to store the state of the user: Signed-In or Signed-Out.
+    - State from the index page.
+  - View template for the sign in form
+  - Create route for the form to submit to.
+  - Verify the credentials for the user:
+    1. If the username and password match:
+      - Sign-In the User
+    2. If the username and the password don't match:
+      - Redirect with a session message.
+
+How to track if a user is signed in?
+  - USE a session parameter?
+    - Session[:user] = username
+  - 

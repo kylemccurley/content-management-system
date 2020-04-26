@@ -69,7 +69,7 @@ class CMSTest < Minitest::Test
   # rubocop:disable Metrics/AbcSize
   def test_updating_document
     post '/changes.txt', content: 'new content'
-    assert_equal 302, last_resptusonse.sta
+    assert_equal 302, last_response.status
 
     get last_response['Location']
     assert_includes last_response.body, 'changes.txt has been updated'
@@ -97,5 +97,19 @@ class CMSTest < Minitest::Test
 
     get "/"
     assert_includes last_response.body, 'test.txt'
+  end
+
+  def test_deleting_document
+    create_document('test.txt')
+
+    post '/test.txt/delete'
+
+    assert_equal 302, last_response.status
+
+    get last_response["Location"]
+    assert_includes last_response.body, 'test.txt has been deleted.'
+
+    get '/'
+    refute_includes last_response.body, 'test.txt'
   end
 end
